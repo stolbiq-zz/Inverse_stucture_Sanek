@@ -3,35 +3,50 @@ package pack1;
 public class Vector {
 	public int col, str;
 	public int[][] arr;
+	public void printf(){
+		for (int i=0; i<col; i++){
+			for (int j=0; j<str; j++){
+				System.out.print(arr[i][j] + " ");
+			}
+			System.out.println();
+		}
+	}	
 	public void sumVectorAVectorB(Vector v){
-		System.out.println("Summary");
-		if ((this.col != v.col) || (this.str != v.str)){   //this - к этому объекту обращаемся!!! v - параметр
+		System.out.println("Addition");
+		if ((this.col != v.col) || (this.str != v.str)){ 
 			System.out.println("Impossible to sum");
 		}
 		else{
+			Vector sumAB = new Vector();
+			sumAB.arr = new int[this.col][this.str];
 			for (int i=0; i<this.col; i++){
 				for (int j=0; j<this.str; j++){
-					System.out.print((this.arr[i][j] + v.arr[i][j]) + " ");
+					sumAB.arr[i][j] = this.arr[i][j] + v.arr[i][j];
 				}
-				System.out.println();
+				sumAB.col = this.col;
+				sumAB.str = this.str;
 			}
+			sumAB.printf();
 		}
 	}
 	
 	public void minusVectorAVectorB(Vector v){
 		System.out.println("Minus");
 		if ((this.col != v.col) || (this.str != v.str)){
-			System.out.println("Impossible to minus");
+			System.out.println("Impossible to sum");
 		}
 		else{
+			Vector minAB = new Vector();
+			minAB.arr = new int[this.col][this.str];
 			for (int i=0; i<this.col; i++){
 				for (int j=0; j<this.str; j++){
-					System.out.println((this.arr[i][j] - v.arr[i][j]) + " ");
+					minAB.arr[i][j] = this.arr[i][j] - v.arr[i][j];
 				}
-				System.out.println();
+				minAB.col = this.col;
+				minAB.str = this.str;
 			}
+			minAB.printf();
 		}
-		System.out.println("_________________");
 	}
 	
 	public void multipleVectorAVectorB(Vector v){
@@ -39,23 +54,33 @@ public class Vector {
 		if (this.str != v.col){
 			System.out.println("Impossible to mult");
 		}
-		
+
 		else{
-			int[][] multAB = new int[this.col+1][v.str+1];
+			Vector multAB = new Vector();
+			multAB.arr = new int[this.col+1][v.str+1];
 			for (int i=0; i<this.col; i++){
 				for (int j=0; j<v.str; j++){
 					for(int t=0; t<this.str; t++){
-						multAB[i][j] = multAB[i][j] + this.arr[i][t] * v.arr[t][j];
+						multAB.arr[i][j] = multAB.arr[i][j] + this.arr[i][t] * v.arr[t][j];
 					}
-			}
-		}
-			for (int i=0; i<this.col; i++){
-				for (int j=0; j<v.str; j++){
-					System.out.print(multAB[i][j] + " ");
 				}
-				System.out.println();
+			}
+			multAB.col = this.col;
+			multAB.str = v.str;
+			multAB.printf();
+		}
+	}
+	
+	public Vector intMult(int a){
+		Vector iMult = new Vector();
+		iMult.arr = new int[this.col+1][this.str+1];
+		for (int i=0; i<this.col; i++){
+			for(int j=0; j<this.str; j++){
+				iMult.arr[i][j] = a*this.arr[i][j];
 			}
 		}
-		System.out.println("_________________");
+		iMult.col = this.col;
+		iMult.str = this.str;
+		return (iMult);
 	}
 }
