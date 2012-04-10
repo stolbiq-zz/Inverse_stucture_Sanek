@@ -19,12 +19,10 @@ public class Matrix extends Vector {
 		Matrix minorMatrix = new Matrix();
 		int m = 0;
 		int n = 0;
-		int i = 0;
-		int j = 0;
 		minorMatrix.arr = new int[col][str];
-		for (i=0; i<col; i++){
+		for (int i=0; i<col; i++){
 			if (i!=k){
-				for (j=0; j<str; j++){
+				for (int j=0; j<str; j++){
 					if (j!=q){
 						minorMatrix.arr[m][n] = arr[i][j];
 						n++;
