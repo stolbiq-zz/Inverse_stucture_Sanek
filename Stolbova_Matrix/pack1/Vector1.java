@@ -1,8 +1,38 @@
 package pack1;
 
-public class Vector {
-	public int col, str;
-	public int[][] arr;
+public class Vector1 {
+	
+	protected int col, str;
+	protected int[][] arr;
+	
+	Vector1(int m, int n){
+		int[][] array = new int[m][n];
+		for (int i=0; i<m; i++){
+			for(int j=0; j<n; j++){
+				array[i][j] = 0;
+			}
+		}
+		arr = array;
+		col = m;
+		str = n;
+	}
+	
+	public void setElement(int i, int j, int p){
+		arr[i][j] = p;
+	}
+	
+	public int getElement(int i, int j){
+		return arr[i][j];
+	}
+	
+	public int getStr(){
+		return str;
+	}
+	
+	public int getCol(){
+		return col;
+	}
+	
 	public void printf(){
 		for (int i=0; i<col; i++){
 			for (int j=0; j<str; j++){
@@ -10,54 +40,48 @@ public class Vector {
 			}
 			System.out.println();
 		}
-	}	
-	public void sumVectorAVectorB(Vector v){
+	}
+	
+	public void sumVectorAVectorB(Vector1 v){
 		System.out.println("Addition");
-		if ((this.col != v.col) || (this.str != v.str)){ 
+		if ((this.col != v.col) || (this.str != v.str)){
 			System.out.println("Impossible to sum");
 		}
 		else{
-			Vector sumAB = new Vector();
-			sumAB.arr = new int[this.col][this.str];
+			Vector1 sumAB = new Vector1(this.col, this.str);
 			for (int i=0; i<this.col; i++){
 				for (int j=0; j<this.str; j++){
 					sumAB.arr[i][j] = this.arr[i][j] + v.arr[i][j];
 				}
-				sumAB.col = this.col;
-				sumAB.str = this.str;
 			}
 			sumAB.printf();
 		}
 	}
 	
-	public void minusVectorAVectorB(Vector v){
+	public void minusVectorAVectorB(Vector1 v){
 		System.out.println("Minus");
 		if ((this.col != v.col) || (this.str != v.str)){
 			System.out.println("Impossible to sum");
 		}
 		else{
-			Vector minAB = new Vector();
-			minAB.arr = new int[this.col][this.str];
+			Vector1 minAB = new Vector1(this.col, this.str);
 			for (int i=0; i<this.col; i++){
 				for (int j=0; j<this.str; j++){
 					minAB.arr[i][j] = this.arr[i][j] - v.arr[i][j];
 				}
-				minAB.col = this.col;
-				minAB.str = this.str;
 			}
 			minAB.printf();
 		}
 	}
 	
-	public void multipleVectorAVectorB(Vector v){
+	public void multipleVectorAVectorB(Vector1 v){
 		System.out.println("Multiplication");
 		if (this.str != v.col){
 			System.out.println("Impossible to mult");
 		}
-
+	
 		else{
-			Vector multAB = new Vector();
-			multAB.arr = new int[this.col+1][v.str+1];
+			Vector1 multAB = new Vector1(this.col, this.str);
 			for (int i=0; i<this.col; i++){
 				for (int j=0; j<v.str; j++){
 					for(int t=0; t<this.str; t++){
@@ -65,22 +89,17 @@ public class Vector {
 					}
 				}
 			}
-			multAB.col = this.col;
-			multAB.str = v.str;
 			multAB.printf();
 		}
 	}
 	
-	public Vector intMult(int a){
-		Vector iMult = new Vector();
-		iMult.arr = new int[this.col+1][this.str+1];
+	public Vector1 intMult(int a){
+		Vector1 iMult = new Vector1(this.col, this.str);;
 		for (int i=0; i<this.col; i++){
 			for(int j=0; j<this.str; j++){
 				iMult.arr[i][j] = a*this.arr[i][j];
 			}
 		}
-		iMult.col = this.col;
-		iMult.str = this.str;
 		return (iMult);
 	}
 }

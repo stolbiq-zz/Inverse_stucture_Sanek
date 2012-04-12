@@ -1,12 +1,12 @@
 package pack1;
 
-public class Matrix extends Vector {
+public class Matrix1 extends Vector1 {
+	Matrix1(int n, int m){
+		super(n, m);
+	}
 	
-	public Matrix trans (){
-		Matrix mtr = new Matrix();
-		mtr.arr = new int[str+1][col+1];
-		mtr.col = str;
-		mtr.str = col;
+	public Matrix1 trans (){
+		Matrix1 mtr = new Matrix1(this.str, this.col);
 		for (int i=0; i<col; i++){
 			for(int j=0; j<str; j++){
 				mtr.arr[j][i] = arr[i][j];
@@ -15,13 +15,12 @@ public class Matrix extends Vector {
 		return mtr;
 	}
 	
-	private Matrix minor(int k, int q){
-		Matrix minorMatrix = new Matrix();
+	private Matrix1 minor(int k, int q){
+		Matrix1 minorMatrix = new Matrix1(col-1, str-1);
 		int m = 0;
 		int n = 0;
 		int i = 0;
 		int j = 0;
-		minorMatrix.arr = new int[col][str];
 		for (i=0; i<col; i++){
 			if (i!=k){
 				for (j=0; j<str; j++){
@@ -34,8 +33,6 @@ public class Matrix extends Vector {
 			}
 			n=0;
 		}
-		minorMatrix.col = col-1;
-		minorMatrix.str = str-1;
 		return minorMatrix;
 	}
 	public int det() throws DetMistake{
