@@ -81,7 +81,7 @@ public class Vector1 {
 		}
 	
 		else{
-			Vector1 multAB = new Vector1(this.col, this.str);
+			Vector1 multAB = new Vector1(this.col, v.str);
 			for (int i=0; i<this.col; i++){
 				for (int j=0; j<v.str; j++){
 					for(int t=0; t<this.str; t++){
