@@ -5,7 +5,7 @@ public class Vector1 {
 	protected int col, str;
 	protected int[][] arr;
 	
-	Vector1(int m, int n){
+	public Vector1(int m, int n){
 		int[][] array = new int[m][n];
 		for (int i=0; i<m; i++){
 			for(int j=0; j<n; j++){
