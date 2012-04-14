@@ -1,7 +1,7 @@
 package pack1;
 
 public class Matrix1 extends Vector1 {
-	Matrix1(int n, int m){
+	public Matrix1(int n, int m){
 		super(n, m);
 	}
 	
