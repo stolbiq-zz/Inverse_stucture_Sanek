@@ -7,7 +7,7 @@ public class Vector1 {
 	protected int col, str;
 	protected ArrayList<Integer> arr;
 	
-	Vector1(int m, int n){
+	public Vector1(int m, int n){
 		ArrayList <Integer> array = new ArrayList<Integer>();
 		for (int i=0; i<m*n; i++){
 			array.add(new Integer(0));
