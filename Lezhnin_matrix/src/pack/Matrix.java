@@ -68,8 +68,8 @@ public class Matrix extends Vector {
 	// end of determinant calculation
 
 	public Matrix inverse() throws MistakeNullDet, MistakeImpossibleToCalculate{
-		int flag_str = 0;
-		int flag_col = 0;
+		int flagstr = 0;
+		int flagcol = 0;
 		Matrix invMat = new Matrix(this.colnum, this.strnum);
 		Matrix minor = new Matrix(this.colnum - 1, this.strnum - 1);
 		if (this.detMatrixA() < 0.0000001 && this.detMatrixA() > -0.0000001) {
@@ -78,18 +78,18 @@ public class Matrix extends Vector {
 			double det = this.detMatrixA();
 			for (int i = 0; i < this.strnum; i++) {
 				for (int k = 0; k < this.strnum; k++) {
-					flag_str = 0;
+					flagstr = 0;
 					for (int j = 0; j < minor.strnum; j++) {
 						if (i == j) {
-							flag_str = 1;
+							flagstr = 1;
 						}
-						flag_col = 0;
+						flagcol = 0;
 						for (int t = 0; t < minor.strnum; t++) {
 							if (k == t) {
-								flag_col = 1;
+								flagcol = 1;
 							}
-							minor.arr[j][t] = this.arr[j + flag_str][t
-									+ flag_col];
+							minor.arr[j][t] = this.arr[j + flagstr][t
+									+ flagcol];
 						}
 					}
 					// minor.print_matrix();
