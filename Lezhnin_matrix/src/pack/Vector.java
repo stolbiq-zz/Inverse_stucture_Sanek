@@ -17,7 +17,7 @@ public class Vector {
 
 	}
 
-	protected void print_matrix() {
+	protected void printMatrix() {
 		for (int i = 0; i < this.strnum; i++) {
 			for (int j = 0; j < colnum; j++) {
 				System.out.print(arr[i][j] + " ");
@@ -26,41 +26,44 @@ public class Vector {
 		}
 	}
 
-	public void sumAB(Vector v) {
+	public Vector sumAB(Vector v) {
 		System.out.println("Sum");
 		Vector sumAB = new Vector(this.colnum, this.strnum);
 		if ((this.colnum != v.colnum) || (this.strnum != v.strnum)) {
 			System.out.println("Incorrect operation");
+			return sumAB;
 		} else {
 			for (int i = 0; i < this.colnum; i++) {
 				for (int k = 0; k < this.strnum; k++) {
 					sumAB.arr[i][k] = this.arr[i][k] + v.arr[i][k];
 				}
 			}
-			sumAB.print_matrix();
+		return sumAB;			
 		}
 	}
 
-	public void minusAB(Vector v) {
+	public Vector minusAB(Vector v) {
 		System.out.println("Minus");
 		Vector minusAB = new Vector(this.colnum, this.strnum);
 		if ((this.colnum != v.colnum) || (this.strnum != v.strnum)) {
 			System.out.println("Incorrect operation");
+		return minusAB;
 		} else {
 			for (int i = 0; i < this.colnum; i++) {
 				for (int k = 0; k < this.strnum; k++) {
 					minusAB.arr[i][k] = this.arr[i][k] - v.arr[i][k];
 				}
 			}
-			minusAB.print_matrix();
+		return minusAB;
 		}
 	}
 
-	public void multAB(Vector v) {
+	public Vector multAB(Vector v) {
 		System.out.println("Multiplication");
 		Vector multAB = new Vector(this.colnum, v.strnum);
 		if (this.strnum != v.colnum) {
 			System.out.println("Impossible to multiply");
+			return multAB;
 		} else {
 			for (int i = 0; i < this.colnum; i++) {
 				for (int k = 0; k < v.strnum; k++) {
@@ -70,9 +73,9 @@ public class Vector {
 					}
 				}
 			}
-
+			return multAB;
 		}
-		multAB.print_matrix();
+		
 	}
 
 	public Vector trans() {
@@ -83,11 +86,11 @@ public class Vector {
 				trans.arr[i][k] = this.arr[k][i];
 			}
 		}
-		trans.print_matrix();
+		
 		return trans;
 	}
 
-	public void multnum(double num) {
+	public Vector multnum(double num) {
 		System.out.println("Multiply with number");
 		Vector multnum = new Vector(this.colnum, this.strnum);
 		for (int i = 0; i < this.colnum; i++) {
@@ -95,6 +98,6 @@ public class Vector {
 				multnum.arr[i][k] = num * this.arr[i][k];
 			}
 		}
-		multnum.print_matrix();
+	return multnum;	
 	}
 }

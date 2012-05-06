@@ -62,24 +62,52 @@ public class Main {
 		try {
 			Matrix A = scannerReadFile("A.txt");
 			Matrix B = scannerReadFile("B.txt");
-			A.sumAB(B);
-			A.minusAB(B);
-			A.multAB(B);
-			System.out.println("Det");
-			try {
-				double det = A.detMatrixA();
-				System.out.print("Det=");
-				System.out.println(det);
-			    System.out.println("Inverse");
-				A.inverse();
+			Scanner operation = new Scanner(System.in);
+			String s;
+			while(true){
+				s = operation.nextLine();
+			if(s.equals("Sum")){
+				A.sumAB(B).printMatrix();
+				}else{
+			if(s.equals("Minus")){
+					A.minusAB(B).printMatrix();
+				}else{
+					if (s.equals("Multiply")){
+						A.multAB(B).printMatrix();	
+					}else{
+					if(s.equals("Det")){
+						double det = A.detMatrixA();
+						System.out.print("Det=");
+						System.out.println(det);
+							
+					}else{
+					if(s.equals("Inverse")){
+						System.out.println("Inverse");
+						A.inverse().printMatrix();	
+					}else{
+						if(s.equals("Exit")){
+						break;	
+						}
+					}	
+					}	
+					
+					}
+					
+				}
+				
+				}
+			
+			
+			}	
 			} catch (MistakeNullDet err2) {
 				err2.print();
 			}
 			catch (MistakeImpossibleToCalculate err1) {
 				err1.print();
 			}
-		} catch (FileNotFoundException e) {
+		 catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-	}
+		}
+
 }

@@ -49,7 +49,7 @@ public class Matrix extends Vector {
 
 	}
 
-	public double detMatrixA() throws MistakeNullDet, MistakeImpossibleToCalculate{
+	public double detMatrixA() throws  MistakeImpossibleToCalculate{
 		det = 0;
 		if (this.strnum != this.colnum){
 			throw new MistakeImpossibleToCalculate();
@@ -67,7 +67,7 @@ public class Matrix extends Vector {
 
 	// end of determinant calculation
 
-	public void inverse() throws MistakeNullDet, MistakeImpossibleToCalculate{
+	public Matrix inverse() throws MistakeNullDet, MistakeImpossibleToCalculate{
 		int flag_str = 0;
 		int flag_col = 0;
 		Matrix invMat = new Matrix(this.colnum, this.strnum);
@@ -97,7 +97,7 @@ public class Matrix extends Vector {
 							* (minor.detMatrixA()) / det;
 				}
 			}
-			invMat.print_matrix();
+		return invMat;	
 		}
 	}
 }
