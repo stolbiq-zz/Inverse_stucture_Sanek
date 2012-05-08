@@ -28,6 +28,7 @@ public class MyTable extends JPanel {
         
 		table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		table.setFillsViewportHeight(true);
+		
  
 		if (DEBUG) {
 			table.addMouseListener(new MouseAdapter() {
