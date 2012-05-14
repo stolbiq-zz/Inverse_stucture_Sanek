@@ -1,18 +1,15 @@
 package grafica;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
-
 import javax.swing.*;
-import javax.swing.event.*;
  
 public class MyJList extends JPanel {
     private JList list;
     private DefaultListModel listModel;
-    public static int t;
+    private static int t;
     
     public ArrayList<String> scannerReadFile(String file) throws FileNotFoundException{
     	t = 0;
@@ -24,10 +21,10 @@ public class MyJList extends JPanel {
 		}
 		return array;
 	}
-    public MyJList(){
+    public MyJList(String file){
         super(new BorderLayout());
         try{
-        	ArrayList<String> array = scannerReadFile("quickstart.dat");
+        	ArrayList<String> array = scannerReadFile(file);
 	        listModel = new DefaultListModel();
 	        for (int i =0; i<t; i++){
 		        String line = array.get(i);
@@ -50,7 +47,6 @@ public class MyJList extends JPanel {
     
     public int getT(){
     	int a = t;
-    	System.out.println(a);
     	return a;
     }
 }

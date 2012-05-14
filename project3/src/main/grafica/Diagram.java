@@ -19,10 +19,10 @@ public class Diagram extends JApplet {
 	final static Color bg = Color.white;
     final static Color fg = Color.black;
     
-	public Diagram readNumbers() throws IOException{
+	public Diagram readNumbers(String file) throws IOException{
 		FileReader fl =new FileReader (new File("quickstart.dat")); 
 		StreamTokenizer st =new StreamTokenizer(new BufferedReader(fl));
-		int t = new MyJList().getT();
+		int t = new MyJList(file).getT();
 		double[] x1 = new double[t];
 		double[] y1 = new double[t];
 		int i = 0;
@@ -66,10 +66,9 @@ public class Diagram extends JApplet {
         int gridWidth = d.width;
         int gridHeight = d.height;
 		g2.setPaint(fg3D);
-		int t = new MyJList().getT();
+		int t = new MyJList("quickstart.dat").getT();
 		try{
-			Diagram ob = readNumbers();
-			double q = maxDouble(ob.y, t);
+			Diagram ob = readNumbers("quickstart.dat");
 			double kWid = gridWidth/maxDouble(ob.x, t);
 			double kHgt = gridHeight/maxDouble(ob.y, t);
 			for(int p = 0; p<t; p++){

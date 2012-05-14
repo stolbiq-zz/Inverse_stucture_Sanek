@@ -1,60 +1,77 @@
 package grafica;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
  
+/** 
+ * TableDemo is just like SimpleTableDemo, except that it
+ * uses a custom TableModel.
+ */
 public class MyTable extends JPanel {
-	private boolean DEBUG = false;
-	
-	public MyTable() {
-		super(new GridLayout(1,0));
-		String[] columnNames = {"Matter",
-                                "Probability"};
  
-		Object[][] data = {
-        		{"Nikel", "98"},
-        		{"Cobalt", "69"},
-        		{"Magniy", "54"},
-        		{"Margonets", "45"}
-        };
-		final JTable table = new JTable(data, columnNames);
-       
-		table.setEnabled(false);
+    public MyTable() {
+        super(new GridLayout(1,0));
+    	TableColumn column;
+    	JButton b = new JButton();
+    	b.setIcon(new ImageIcon("D:\\Informatics\\Projecto\\nixus-preview1.gif"));
+    	final String[] columnNames = {"",
+				"Matter",
+                "E%"};
+		final Object[][] data = {
+				{b, "Magny", new Integer(5)},
+				{b, "Magny", new Integer(5)},
+				{b, "Magny", new Integer(5)},
+				{b, "Magny", new Integer(5)},
+				{b, "Magny", new Integer(5)},
+		};
+        JTable table = new JTable(new DefaultTableModel(data, columnNames){
+        	public Class<?> getColumnClass(int columnIndex) {
+                return getValueAt(0, columnIndex).getClass();
+            }
+                public boolean isCellEditable(int row, int col) {
+                    //Note that the data/cell address is constant,
+                    //no matter where the cell appears onscreen.
+                    if (col == 0) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+        });
+        table.setEnabled(false);
+        table.setPreferredScrollableViewportSize(new Dimension(220, 70));
+        table.setFillsViewportHeight(true);
+        JScrollPane scrollPane = new JScrollPane(table);
+        add(scrollPane);
+        for (int i = 0; i < 3; i++) {
+            column = table.getColumnModel().getColumn(i);
+            if (i == 0) {
+                column.setPreferredWidth(20);
+            } if (i == 1){
+                column.setPreferredWidth(150);
+            } if (i == 2){
+        		column.setPreferredWidth(50);
+        	}
+    	}
         
-		table.setPreferredScrollableViewportSize(new Dimension(500, 70));
-		table.setFillsViewportHeight(true);
-		
- 
-		if (DEBUG) {
-			table.addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent e) {
-					printDebugData(table);
-				}
-			});
-		}
- 
-		JScrollPane scrollPane = new JScrollPane(table);
-		add(scrollPane);
-	}
- 
-	private void printDebugData(JTable table) {
-		int numRows = table.getRowCount();
-		int numCols = table.getColumnCount();
-		javax.swing.table.TableModel model = table.getModel();
- 
-		System.out.println("Value of data: ");
-		for (int i=0; i < numRows; i++) {
-			System.out.print("    row " + i + ":");
-			for (int j=0; j < numCols; j++) {
-				System.out.print("  " + model.getValueAt(i, j));
-			}
-			System.out.println();
-		}
-		System.out.println("--------------------------");
-	}
+        table.setDefaultRenderer(JButton.class, new TableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table,
+                    Object value, boolean isSelected, boolean hasFocus,
+                    int row, int column) {
+                return (Component) value;
+            }
+        });
+    }    
 }
