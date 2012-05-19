@@ -5,27 +5,34 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.table.AbstractTableModel;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
  
 /** 
  * TableDemo is just like SimpleTableDemo, except that it
  * uses a custom TableModel.
  */
 public class MyTable extends JPanel {
- 
-    public MyTable() {
+	private Window1 parent;
+    public MyTable(Window1 creator) {
         super(new GridLayout(1,0));
+
+    	parent = creator;
+        
     	TableColumn column;
     	JButton b = new JButton();
+    	b.setEnabled(true);
     	b.setIcon(new ImageIcon("D:\\Informatics\\Projecto\\nixus-preview1.gif"));
-    	final String[] columnNames = {"",
+    	final String[] columnNames = {"D",
 				"Matter",
                 "E%"};
 		final Object[][] data = {
@@ -35,18 +42,12 @@ public class MyTable extends JPanel {
 				{b, "Magny", new Integer(5)},
 				{b, "Magny", new Integer(5)},
 		};
-        JTable table = new JTable(new DefaultTableModel(data, columnNames){
+        final JTable table = new JTable(new DefaultTableModel(data, columnNames){
         	public Class<?> getColumnClass(int columnIndex) {
                 return getValueAt(0, columnIndex).getClass();
             }
                 public boolean isCellEditable(int row, int col) {
-                    //Note that the data/cell address is constant,
-                    //no matter where the cell appears onscreen.
-                    if (col == 0) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    return false;
                 }
         });
         table.setEnabled(false);
@@ -73,5 +74,59 @@ public class MyTable extends JPanel {
                 return (Component) value;
             }
         });
-    }    
-}
+        
+        b.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent ae){
+				int a = parent.applet.getSignal();
+				if (a == -1){
+					parent.applet.setSignal(1);
+				} else{
+					parent.applet.setSignal(-1);
+				}
+				parent.applet.repaint();
+				
+			}
+		});
+        
+        table.addMouseListener(new MouseListener() {
+            private void dispatchEvent(MouseEvent e) {
+                final int column = table.getColumnModel().getColumnIndexAtX(
+                        e.getX());
+                final int row = e.getY() / table.getRowHeight();
+                if (row >= table.getRowCount() || row < 0
+                        || column >= table.getColumnCount() || column < 0)
+                    return;
+                final Object value = table.getValueAt(row, column);
+                if (!(value instanceof JButton))
+                    return;
+                final JButton button = (JButton) value;
+                final MouseEvent buttonEvent = SwingUtilities
+                        .convertMouseEvent(table, e, button);
+                button.dispatchEvent(buttonEvent);
+                if (e.getID() == MouseEvent.MOUSE_CLICKED) {
+                    final ActionEvent ae = new ActionEvent(button,
+                            ActionEvent.ACTION_PERFORMED, button.getText());
+                    for (final ActionListener l : button.getActionListeners())
+                        l.actionPerformed(ae);
+                }
+                table.repaint();
+            }
+
+            public void mouseClicked(MouseEvent e) {
+                dispatchEvent(e);
+            }
+
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            public void mouseExited(MouseEvent e) {
+            }
+
+            public void mousePressed(MouseEvent e) {
+            }
+
+            public void mouseReleased(MouseEvent e) {
+            }
+        });
+    }
+}    

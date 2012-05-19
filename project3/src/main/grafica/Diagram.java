@@ -15,9 +15,22 @@ import javax.swing.JApplet;
 
 public class Diagram extends JApplet {
 	private double[] x, y;
+	private int signal;
 	
 	final static Color bg = Color.white;
     final static Color fg = Color.black;
+    
+    public Diagram() {
+    	signal = -1;
+    }
+    
+    public void setSignal(int i){
+    	signal = i;
+    }
+    
+    public int getSignal(){
+    	return signal;
+    }
     
 	public Diagram readNumbers(String file) throws IOException{
 		FileReader fl =new FileReader (new File(new OpenList().getFileName())); 
@@ -57,13 +70,18 @@ public class Diagram extends JApplet {
     }
 	
 	public void paint(Graphics g) {
+		
 		Graphics2D g2 = (Graphics2D) g;
-
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        Dimension d = getSize();
+		Dimension d = getSize();
         int a = 70;
         int gridWidth = d.width-a;
         int gridHeight = d.height-a;
+        g.setColor(Color.black);
+        int[] xVertex = { 0, d.width, d.width, 0};
+        int[] yVertex = { 0, 0, d.height, d.height};
+		g.drawPolygon(xVertex, yVertex, 4);
+		g.fillPolygon(xVertex, yVertex, 4);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         Color fg3D = Color.white;
 		//стрелки и оси
         g2.setPaint(fg3D);
@@ -113,6 +131,11 @@ public class Diagram extends JApplet {
 			g2.setPaint(Color.blue);
 			for(int p = 0; p<t; p++){
 				g2.draw(new Line2D.Double(a/2+kWid*ob.x[p], a/2+gridHeight ,a/2+kWid*ob.x[p] , a/2+gridHeight - kHgt*ob.y[p]));
+			}
+			
+			g2.setPaint(Color.yellow);
+			if(signal == 1){
+				g2.drawString("Yes", gridWidth/2, gridHeight/2);
 			}
 			
 		}catch (IOException e) {

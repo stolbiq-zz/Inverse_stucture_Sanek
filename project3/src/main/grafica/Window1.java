@@ -1,19 +1,14 @@
 package grafica;
 
+import java.awt.Color;
 import java.awt.EventQueue;
-
-import javax.swing.JApplet;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import java.awt.Color;
 
 public class Window1 {
-
-	private JFrame frame;
-
-	/**
-	 * Launch the application.
-	 */
+	private static JFrame frame;
+	private MyTable table;
+	public Diagram applet;
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -26,27 +21,28 @@ public class Window1 {
 			}
 		});
 	}
-
+	
 	public Window1() {
-		initialize();
-	}
-
-	public void initialize() {
 		frame = new JFrame("Output Data");
 		frame.setBounds(400, 100,  665, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		MyTable table = new MyTable();
-		table.setOpaque(true);
-		JApplet applet = new Diagram();
-		applet.setBackground(Color.black);
-		MyJList list = new MyJList(new OpenList().getFileName());
+		table = new MyTable(this);
+		applet = new Diagram();
 		JPanel panel = new JPanel();
+		frame.add(panel);
+		frame.add(applet);
+		table.setOpaque(true);
+		MyJList list = new MyJList(new OpenList().getFileName());
+		panel.add(table);
+		panel.add(list);
 		frame.getContentPane().add("South", panel);
-		panel.add("West", table);
-		panel.add("East", list);
-		frame.getContentPane().add("Center",applet);
 		frame.setVisible(true);
 	}
 
+	public void secondWindow(){
+		applet.setBackground(Color.black);
+		frame.getContentPane().add("Center",applet);
+		applet.repaint();
+	}
+	
 }

@@ -174,7 +174,7 @@ public class OpenList extends JPanel
 	    			String wave = waveNumber.getText();
 	    			if (testWave(wave)==false){
 	    				FILENAME = fileName.getText();
-			    		new Window1();
+	    				new Window1();
 			    		frame.setEnabled(false);
 			    		WAVE = Double.parseDouble(wave);
 			    		int t = listModel.getSize();

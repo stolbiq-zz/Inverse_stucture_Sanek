@@ -31,7 +31,6 @@ public class MyJList extends JPanel {
 		    	listModel.addElement(line);
 				
 	        }
-	        //Create the list and put it in a scroll pane.
 	        list = new JList(listModel);
 	        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	        list.setSelectedIndex(0);
