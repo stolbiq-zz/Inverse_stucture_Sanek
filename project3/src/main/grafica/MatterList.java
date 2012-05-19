@@ -13,6 +13,6 @@ public class MatterList {
 		matter.add("St");
 	}
 	public boolean correctMatter(String name){
-		return matter.contains(name);
+		return matter.contains(name.trim());
 	}
 }

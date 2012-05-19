@@ -20,7 +20,7 @@ public class Diagram extends JApplet {
     final static Color fg = Color.black;
     
 	public Diagram readNumbers(String file) throws IOException{
-		FileReader fl =new FileReader (new File("quickstart.dat")); 
+		FileReader fl =new FileReader (new File(new OpenList().getFileName())); 
 		StreamTokenizer st =new StreamTokenizer(new BufferedReader(fl));
 		int t = new MyJList(file).getT();
 		double[] x1 = new double[t];
@@ -48,32 +48,73 @@ public class Diagram extends JApplet {
 
 	private double maxDouble(double[] arr, int t){ 
     	double max = arr[0];
-    	for (int i = 0; i<t; i++){
     		for (int j = 0; j<t; j++){
     			if (arr[j]>max){
     				max = arr[j];
     			}
-    		}
     	}
     	return max;
     }
 	
 	public void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
-		Color fg3D = Color.blue;
+
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         Dimension d = getSize();
-        int gridWidth = d.width;
-        int gridHeight = d.height;
-		g2.setPaint(fg3D);
+        int a = 70;
+        int gridWidth = d.width-a;
+        int gridHeight = d.height-a;
+        Color fg3D = Color.white;
+		//стрелки и оси
+        g2.setPaint(fg3D);
+		g2.draw(new Line2D.Double(a/4, gridHeight+3*a/4, gridWidth+3*a/4, gridHeight+3*a/4));
+		g2.draw(new Line2D.Double(a/4, gridHeight+3*a/4, a/4, a/4));
+		g2.draw(new Line2D.Double(a/4, a/4, a/4-4, a/4+10));
+		g2.draw(new Line2D.Double(a/4, a/4, a/4+4, a/4+10));
+		g2.draw(new Line2D.Double(gridWidth+3*a/4, gridHeight+3*a/4, gridWidth+3*a/4-10, gridHeight+3*a/4+4));
+		g2.draw(new Line2D.Double(gridWidth+3*a/4, gridHeight+3*a/4, gridWidth+3*a/4-10, gridHeight+3*a/4-4));
+		
+		g2.setColor(Color.green);
+		g2.drawString("Intensity",a/2, a/3);
+		g2.drawString("Angle(grad)", gridWidth , gridHeight+3*a/4 - a/10);
+		
+		g2.setColor(Color.blue);
+		g2.drawString("Testing Matter Diffractogram", gridWidth*8/10 , gridHeight*1/10);
+		
+		g2.setColor(Color.yellow);
+		g2.drawString("Database Matter Diffractogram", gridWidth*8/10 , gridHeight*1/6);
+		
+		Color fg3D1 = Color.blue;
+		g2.setPaint(fg3D1);
 		int t = new MyJList("quickstart.dat").getT();
 		try{
 			Diagram ob = readNumbers("quickstart.dat");
-			double kWid = gridWidth/maxDouble(ob.x, t);
-			double kHgt = gridHeight/maxDouble(ob.y, t);
-			for(int p = 0; p<t; p++){
-				g2.draw(new Line2D.Double(kWid*ob.x[p], gridHeight ,kWid*ob.x[p] , gridHeight - kHgt*ob.y[p]));
+			double maxX = maxDouble(ob.x, t);
+			double maxY = maxDouble(ob.y, t);
+			double kWid = gridWidth/maxX;
+			double kHgt = gridHeight/maxY;
+			
+			int ny = 10; int nx = 15;
+			int NX = (int) gridWidth/nx;
+			int NY = (int) gridHeight/ny;
+			int xStep = (int) maxX/nx;
+			int yStep = (int) maxY/ny;
+			g2.setPaint(Color.white);
+			for (int k = 0; k<ny+1; k++){
+				g2.draw(new Line2D.Double(a/4-2, a/2+gridHeight-NY*k, a/4+2 , a/2 + gridHeight-NY*k));
+				g2.drawString(Integer.toString(yStep*k), a/4+a/8, a/2+gridHeight-NY*k);
 			}
+			for (int i = 0; i<nx+1; i++){
+				g2.draw(new Line2D.Double(a/2 + NX*i, gridHeight+3*a/4-2 , a/2 + NX*i , gridHeight+3*a/4+2));
+				g2.drawString(Integer.toString(xStep*i), a/2 + NX*i, gridHeight+3*a/4 + a/5);
+				
+			}
+			
+			g2.setPaint(Color.blue);
+			for(int p = 0; p<t; p++){
+				g2.draw(new Line2D.Double(a/2+kWid*ob.x[p], a/2+gridHeight ,a/2+kWid*ob.x[p] , a/2+gridHeight - kHgt*ob.y[p]));
+			}
+			
 		}catch (IOException e) {
 			e.printStackTrace();
 		}

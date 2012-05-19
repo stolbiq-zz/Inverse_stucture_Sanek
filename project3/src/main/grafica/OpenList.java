@@ -1,12 +1,15 @@
 package grafica;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+
 import javax.swing.*;
 import javax.swing.event.*;
  
 public class OpenList extends JPanel
                       implements ListSelectionListener {
 	private static double WAVE;
+	private static String FILENAME;
 	private static String[] ELEMENTS;
     private JList list;
     private DefaultListModel listModel;
@@ -17,90 +20,186 @@ public class OpenList extends JPanel
     private JButton fireButton;
     private JTextField matterName;
     private JButton searchButton;
-    private JPanel panel_1;
-    private JTextField textField;
-    private JLabel lblNewLabel;
+    private JTextField waveNumber;
+    private JButton openFile;
+    private JTextField fileName;
+    
     public OpenList() {
         super(new BorderLayout());
         
         listModel = new DefaultListModel();
         list = new JList(listModel);
+        list.setToolTipText("The list of Elements");
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.addListSelectionListener(this);
         list.setVisibleRowCount(5);
         JScrollPane listScrollPane = new JScrollPane(list);
-        add(listScrollPane, BorderLayout.CENTER);
         
         searchButton = new JButton("Search");
+        searchButton.setToolTipText("Push to get the result");
         searchButton.addActionListener(new SearchListener());
         searchButton.setEnabled(true);
         
-               JButton hireButton = new JButton(hireString);
-               HireListener hireListener = new HireListener(hireButton);
-               hireButton.setActionCommand(hireString);
-               hireButton.addActionListener(hireListener);
-               hireButton.setEnabled(false);
+        JButton hireButton = new JButton(hireString);
+        HireListener hireListener = new HireListener(hireButton);
+        hireButton.setActionCommand(hireString);
+        hireButton.addActionListener(hireListener);
+        hireButton.setEnabled(false);
                
                
-               fireButton = new JButton(fireString);
-               fireButton.setActionCommand(fireString);
-               fireButton.addActionListener(new FireListener());
-               fireButton.setEnabled(false);
+        fireButton = new JButton(fireString);
+        fireButton.setHorizontalAlignment(SwingConstants.LEFT);
+        fireButton.setActionCommand(fireString);
+        fireButton.addActionListener(new FireListener());
+        fireButton.setEnabled(false);
                
-               matterName = new JTextField(10);
-               matterName.addActionListener(hireListener);
-               matterName.getDocument().addDocumentListener(hireListener);
+        matterName = new JTextField(10);
+        matterName.setToolTipText("Type the element from Mendeleev Table");
+        matterName.setHorizontalAlignment(SwingConstants.LEFT);
+        matterName.addActionListener(hireListener);
+        matterName.getDocument().addDocumentListener(hireListener);
                
-                       JPanel buttonPane = new JPanel();
-                       buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
-                       buttonPane.add(fireButton);
-                       buttonPane.add(Box.createHorizontalStrut(5));
-                       buttonPane.add(matterName);
-                       buttonPane.add(Box.createHorizontalStrut(5));
-                       buttonPane.add(hireButton);
-                       buttonPane.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-                       buttonPane.add(Box.createHorizontalStrut(5));
-                       buttonPane.add(new JSeparator(SwingConstants.VERTICAL));
-                       buttonPane.add(Box.createHorizontalStrut(5));
-                       buttonPane.add(searchButton);
-                       add(buttonPane, BorderLayout.PAGE_END);
+        openFile = new JButton("Open");
+        openFile.setToolTipText("Choose the file to scan the data");
+        openFile.addActionListener(new OpenFile());
+///
+    		
+    	JDesktopPane desktopPane = new JDesktopPane();
+    	add(desktopPane);
+    	desktopPane.setBackground(Color.WHITE);
+
+    		
+    	listScrollPane.setBounds(22, 69, 253, 82);
+    	desktopPane.add(listScrollPane);
+    		
+    	openFile.setBounds(22, 24, 89, 23);
+    	desktopPane.add(openFile);
+    		
+    	searchButton.setBounds(22, 233, 89, 28);
+    	desktopPane.add(searchButton);
+    		
+    	fileName = new JTextField();
+    	fileName.setEditable(false);
+    	fileName.setToolTipText("Name of the selected file");
+    	fileName.setBounds(117, 25, 158, 20);
+    	desktopPane.add(fileName);
+    	fileName.setColumns(10);
+    		
+    	fireButton.setBounds(22, 157, 78, 23);
+    	desktopPane.add(fireButton);
+    		
+    	matterName.setBounds(104, 158, 109, 20);
+    	desktopPane.add(matterName);
+    	matterName.setColumns(10);
+    	
+    	hireButton.setBounds(218, 157, 57, 23);
+    	desktopPane.add(hireButton);
+    		
+    	JLabel lableWave = new JLabel("Wave Length (nM):");
+    	lableWave.setBounds(22, 191, 120, 20);
+    	desktopPane.add(lableWave);
+    		
+    	waveNumber = new JTextField();
+    	waveNumber.setToolTipText("Type the wave length");
+    	waveNumber.setBounds(141, 191, 86, 20);
+    	desktopPane.add(waveNumber);
+    	waveNumber.setColumns(10);
                        
-                       panel_1 = new JPanel();
-                       add(panel_1, BorderLayout.NORTH);
-                       
-                       lblNewLabel = new JLabel("Wave Length(nM):");
-                       panel_1.add(lblNewLabel);
-                       
-                       textField = new JTextField();
-                       panel_1.add(textField);
-                       textField.setColumns(8);
+    }
+    
+    class OpenFile implements ActionListener{
+    	public void actionPerformed(ActionEvent e){
+    		JButton source = (JButton) (e.getSource());
+    		JFileChooser fileopen = new JFileChooser();	
+    		ExtFileFilter ff1 = new ExtFileFilter("dat", "*.dat");
+    		ExtFileFilter ff2 = new ExtFileFilter("txt", "*.txt");
+    		fileopen.addChoosableFileFilter(ff2);
+    		fileopen.addChoosableFileFilter(ff1);
+    		
+    		int ret = fileopen.showDialog(null, "Open"); 
+    		if (ret ==	JFileChooser.APPROVE_OPTION){ 
+	    		String file = fileopen.getSelectedFile().getName();
+	    		fileName.setText(file);
+    		}
+    	}
+    	class ExtFileFilter extends javax.swing.filechooser.FileFilter {
+
+    		String ext;
+    		String description;
+
+    		ExtFileFilter(String ext, String descr) {
+    			this.ext = ext;
+    			description = descr;
+    		}
+
+    		public boolean accept(File f) {
+    			if (f != null) {
+    				if (f.isDirectory()) {
+    					return true;
+    				}
+    				String extension = getExtension(f);
+    				if (extension == null)
+    					return (ext.length() == 0);
+    				return ext.equals(extension);
+    			}
+    			return false;
+    		}
+
+    		public String getExtension(File f) {
+    			if (f != null) {
+    				String filename = f.getName();
+    				int i = filename.lastIndexOf('.');
+    				if (i > 0 && i < filename.length() - 1) {
+    					return filename.substring(i + 1).toLowerCase();
+    				}
+    				;
+    			}
+    			return null;
+    		}
+
+    		public String getDescription() {
+    			return description;
+    		}
+    	}
+    }
+    
+    public String getFileName(){
+    	return FILENAME;
     }
    
 	class SearchListener implements ActionListener{
     	public void actionPerformed(ActionEvent e){
-    		if (listModel.getSize() != 0){
-    			String wave = textField.getText();
-    			if (testWave(wave)==false){
-		    		new Window1();
-		    		frame.setEnabled(false);
-		    		WAVE = Double.parseDouble(wave);
-		    		int t = listModel.getSize();
-		    		ELEMENTS = 	new String[t];
-		    		for (int i = 0; i<t; i++){
-		    			String name = listModel.getElementAt(i).toString();
-		    			ELEMENTS[i] = name;
-		    		}
-    			}else{
-    				JOptionPane.showMessageDialog(null,
-    			    		"You haven't typed Wave Length or did it incorrectly!",
-    			    		"Fatal Error",
-    			    	    JOptionPane.PLAIN_MESSAGE);
-    			}
-    		}
+    		if (fileName.getText().equals("") != true){
+	    		if (listModel.getSize() != 0){
+	    			String wave = waveNumber.getText();
+	    			if (testWave(wave)==false){
+	    				FILENAME = fileName.getText();
+			    		new Window1();
+			    		frame.setEnabled(false);
+			    		WAVE = Double.parseDouble(wave);
+			    		int t = listModel.getSize();
+			    		ELEMENTS = 	new String[t];
+			    		for (int i = 0; i<t; i++){
+			    			String name = listModel.getElementAt(i).toString();
+			    			ELEMENTS[i] = name;
+			    		}
+	    			}else{
+	    				JOptionPane.showMessageDialog(null,
+	    			    		"You haven't typed Wave Length or did it incorrectly!",
+	    			    		"Warning",
+	    			    	    JOptionPane.PLAIN_MESSAGE);
+	    			}
+	    		}
+	    	}else{
+	    		JOptionPane.showMessageDialog(null,
+			    		"You haven't chosen the file!",
+			    		"Warning",
+			    	    JOptionPane.PLAIN_MESSAGE);
+	    	}
     	}
     	 private boolean testWave(String wave){
-    	    	return textField.getText().equals("");
-    	    }
+    		 return waveNumber.getText().equals("");
+    	 }
     }
     class FireListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -149,7 +248,7 @@ public class OpenList extends JPanel
 	            	index++;
 	            }
 	 
-	            listModel.insertElementAt(matterName.getText(), index);
+	            listModel.insertElementAt(matterName.getText().trim(), index);
 	 
 	            matterName.requestFocusInWindow(); //reset the textField
 	            matterName.setText("");
@@ -217,16 +316,11 @@ public class OpenList extends JPanel
  
 
     public void createOpenWindow() {
-        frame = new JFrame("Input Matter");
-        frame.setBounds(100, 100, 400, 500);
-        frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JPanel panel = new JPanel();
-        JComponent jList = new OpenList();
-        jList.setOpaque(true);
-        frame.getContentPane().add(panel, "North");
-        panel.add(jList, "Center");
-        frame.pack();
-        frame.setVisible(true);
+   		frame = new JFrame("Input Defraction Data");
+		frame.setBounds(100, 100, 337, 310);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		OpenList window = new OpenList();
+		frame.getContentPane().add(window, BorderLayout.CENTER);
+		frame.setVisible(true);
     }
 }
