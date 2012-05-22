@@ -9,6 +9,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+
+import cardsPackage.Start;
+
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -16,16 +19,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
  
-/** 
- * TableDemo is just like SimpleTableDemo, except that it
- * uses a custom TableModel.
- */
 public class MyTable extends JPanel {
 	private Window1 parent;
-    public MyTable(Window1 creator) {
+	private JTable table;
+	int row1;
+	
+	Object[][] data;
+	//private ArrayList<Cards> mainlist;
+    
+	public MyTable(Window1 creator, Start arg1) {
         super(new GridLayout(1,0));
-
+        //mainlist = 
     	parent = creator;
         
     	TableColumn column;
@@ -35,14 +41,14 @@ public class MyTable extends JPanel {
     	final String[] columnNames = {"D",
 				"Matter",
                 "E%"};
-		final Object[][] data = {
-				{b, "Magny", new Integer(5)},
-				{b, "Magny", new Integer(5)},
-				{b, "Magny", new Integer(5)},
-				{b, "Magny", new Integer(5)},
-				{b, "Magny", new Integer(5)},
-		};
-        final JTable table = new JTable(new DefaultTableModel(data, columnNames){
+    	data = new Object[5][3];
+		for (int i = 0; i<5; i++){
+			data[i][1] = arg1.getName(i);
+			data[i][0] = b;
+			data[i][2] = arg1.getFom(i);
+		}
+		System.out.println(data[0][1]);
+        table = new JTable(new DefaultTableModel(data, columnNames){
         	public Class<?> getColumnClass(int columnIndex) {
                 return getValueAt(0, columnIndex).getClass();
             }
@@ -77,14 +83,13 @@ public class MyTable extends JPanel {
         
         b.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
-				int a = parent.applet.getSignal();
+				int a = parent.getApplet().getSignal();
 				if (a == -1){
-					parent.applet.setSignal(1);
+					parent.getApplet().setSignal(row1);
 				} else{
-					parent.applet.setSignal(-1);
+					parent.getApplet().setSignal(-1);
 				}
-				parent.applet.repaint();
-				
+				parent.getApplet().repaint();
 			}
 		});
         
@@ -109,6 +114,7 @@ public class MyTable extends JPanel {
                     for (final ActionListener l : button.getActionListeners())
                         l.actionPerformed(ae);
                 }
+                row1 = row; 
                 table.repaint();
             }
 

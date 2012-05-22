@@ -12,16 +12,27 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.StreamTokenizer;
 import javax.swing.JApplet;
+import javax.swing.JPanel;
 
-public class Diagram extends JApplet {
+import cardsPackage.Start;
+
+public class Diagram extends JPanel {
 	private double[] x, y;
 	private int signal;
-	
+	private OpenList par;
+	private Start start;
 	final static Color bg = Color.white;
     final static Color fg = Color.black;
     
-    public Diagram() {
+    public Diagram(OpenList arg, Start arg1) {
     	signal = -1;
+    	par = arg;
+    	start = arg1;
+    	try{
+    		readNumbers(par);
+    	}catch (IOException e) {
+			e.printStackTrace();
+		}
     }
     
     public void setSignal(int i){
@@ -32,10 +43,10 @@ public class Diagram extends JApplet {
     	return signal;
     }
     
-	public Diagram readNumbers(String file) throws IOException{
-		FileReader fl =new FileReader (new File(new OpenList().getFileName())); 
+	public void readNumbers(OpenList arg) throws IOException{
+		FileReader fl =new FileReader (new File(arg.getFileName())); 
 		StreamTokenizer st =new StreamTokenizer(new BufferedReader(fl));
-		int t = new MyJList(file).getT();
+		int t = new MyJList(arg.getFileName()).getT();
 		double[] x1 = new double[t];
 		double[] y1 = new double[t];
 		int i = 0;
@@ -53,10 +64,8 @@ public class Diagram extends JApplet {
 				}
 			}
 		}
-		Diagram ob = new Diagram();
-		ob.x = x1;
-		ob.y = y1;
-		return ob;
+		x = x1;
+		y = y1;
 	}
 
 	private double maxDouble(double[] arr, int t){ 
@@ -70,7 +79,6 @@ public class Diagram extends JApplet {
     }
 	
 	public void paint(Graphics g) {
-		
 		Graphics2D g2 = (Graphics2D) g;
 		Dimension d = getSize();
         int a = 70;
@@ -92,10 +100,27 @@ public class Diagram extends JApplet {
 		g2.draw(new Line2D.Double(gridWidth+3*a/4, gridHeight+3*a/4, gridWidth+3*a/4-10, gridHeight+3*a/4+4));
 		g2.draw(new Line2D.Double(gridWidth+3*a/4, gridHeight+3*a/4, gridWidth+3*a/4-10, gridHeight+3*a/4-4));
 		
+		int t = new MyJList(par.getFileName()).getT();
+		double maxX = maxDouble(x, t);
+		double maxY = maxDouble(y, t);
+		double kWid = gridWidth/maxX;
+		double kHgt = gridHeight/maxY;
+		
+		int ny = 10; int nx = 15;
+		int NX = (int) gridWidth/nx;
+		int NY = (int) gridHeight/ny;
+		double xStep = maxX/nx;
+		int yStep = (int) maxY/ny;
+		
 		g2.setColor(Color.green);
 		g2.drawString("Intensity",a/2, a/3);
-		g2.drawString("Angle(grad)", gridWidth , gridHeight+3*a/4 - a/10);
-		
+		if (xStep<1 && xStep>0.1){
+			xStep = xStep*10;
+			g2.setPaint(Color.green);
+			g2.drawString("Angle(grad/10)", gridWidth-a/2 , gridHeight+3*a/4 - a/10);
+		}else{
+			g2.drawString("Angle(grad)", gridWidth-a/2 , gridHeight+3*a/4 - a/10);
+		}
 		g2.setColor(Color.blue);
 		g2.drawString("Testing Matter Diffractogram", gridWidth*8/10 , gridHeight*1/10);
 		
@@ -104,19 +129,6 @@ public class Diagram extends JApplet {
 		
 		Color fg3D1 = Color.blue;
 		g2.setPaint(fg3D1);
-		int t = new MyJList("quickstart.dat").getT();
-		try{
-			Diagram ob = readNumbers("quickstart.dat");
-			double maxX = maxDouble(ob.x, t);
-			double maxY = maxDouble(ob.y, t);
-			double kWid = gridWidth/maxX;
-			double kHgt = gridHeight/maxY;
-			
-			int ny = 10; int nx = 15;
-			int NX = (int) gridWidth/nx;
-			int NY = (int) gridHeight/ny;
-			int xStep = (int) maxX/nx;
-			int yStep = (int) maxY/ny;
 			g2.setPaint(Color.white);
 			for (int k = 0; k<ny+1; k++){
 				g2.draw(new Line2D.Double(a/4-2, a/2+gridHeight-NY*k, a/4+2 , a/2 + gridHeight-NY*k));
@@ -124,23 +136,21 @@ public class Diagram extends JApplet {
 			}
 			for (int i = 0; i<nx+1; i++){
 				g2.draw(new Line2D.Double(a/2 + NX*i, gridHeight+3*a/4-2 , a/2 + NX*i , gridHeight+3*a/4+2));
-				g2.drawString(Integer.toString(xStep*i), a/2 + NX*i, gridHeight+3*a/4 + a/5);
-				
+				g2.drawString(Integer.toString((int)xStep*i), a/2 + NX*i, gridHeight+3*a/4 + a/5);
 			}
 			
 			g2.setPaint(Color.blue);
 			for(int p = 0; p<t; p++){
-				g2.draw(new Line2D.Double(a/2+kWid*ob.x[p], a/2+gridHeight ,a/2+kWid*ob.x[p] , a/2+gridHeight - kHgt*ob.y[p]));
+				g2.draw(new Line2D.Double(a/2+kWid*x[p], a/2+gridHeight ,a/2+kWid*x[p] , a/2+gridHeight - kHgt*y[p]));
 			}
 			
 			g2.setPaint(Color.yellow);
-			if(signal == 1){
-				g2.drawString("Yes", gridWidth/2, gridHeight/2);
+			if(signal > -1){
+				for(int j = 0; j<start.getLength(signal); j++){
+					g2.draw(new Line2D.Double(a/2+kWid*start.getXPeak(signal, j), a/2+gridHeight ,a/2+kWid*start.getXPeak(signal, j) , (a/2+gridHeight - 13*kHgt*start.getYPeak(signal, j))));
+				}
+				//g2.drawString("Yes", gridWidth/2, gridHeight/2);
 			}
-			
-		}catch (IOException e) {
-			e.printStackTrace();
-		}
 	    g2.setPaint(fg);
 	}
 }	

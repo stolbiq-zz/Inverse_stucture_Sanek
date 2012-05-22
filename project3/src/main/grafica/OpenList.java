@@ -2,15 +2,19 @@ package grafica;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.util.regex.*;
 
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import cardsPackage.ChemComposition;
  
 public class OpenList extends JPanel
                       implements ListSelectionListener {
-	private static double WAVE;
-	private static String FILENAME;
-	private static String[] ELEMENTS;
+	protected static double WAVE;
+	protected static String FILENAME;
+	protected static String[] ELEMENTS;
     private JList list;
     private DefaultListModel listModel;
     private static JFrame frame;
@@ -37,7 +41,7 @@ public class OpenList extends JPanel
         
         searchButton = new JButton("Search");
         searchButton.setToolTipText("Push to get the result");
-        searchButton.addActionListener(new SearchListener());
+        searchButton.addActionListener(new SearchListener(this));
         searchButton.setEnabled(true);
         
         JButton hireButton = new JButton(hireString);
@@ -45,7 +49,6 @@ public class OpenList extends JPanel
         hireButton.setActionCommand(hireString);
         hireButton.addActionListener(hireListener);
         hireButton.setEnabled(false);
-               
                
         fireButton = new JButton(fireString);
         fireButton.setHorizontalAlignment(SwingConstants.LEFT);
@@ -114,53 +117,14 @@ public class OpenList extends JPanel
     		ExtFileFilter ff1 = new ExtFileFilter("dat", "*.dat");
     		ExtFileFilter ff2 = new ExtFileFilter("txt", "*.txt");
     		fileopen.addChoosableFileFilter(ff2);
-    		fileopen.addChoosableFileFilter(ff1);
-    		
+    		fileopen.addChoosableFileFilter(ff1);    		
     		int ret = fileopen.showDialog(null, "Open"); 
     		if (ret ==	JFileChooser.APPROVE_OPTION){ 
-	    		String file = fileopen.getSelectedFile().getName();
+	    		String file = fileopen.getSelectedFile().getPath();
 	    		fileName.setText(file);
     		}
     	}
-    	class ExtFileFilter extends javax.swing.filechooser.FileFilter {
-
-    		String ext;
-    		String description;
-
-    		ExtFileFilter(String ext, String descr) {
-    			this.ext = ext;
-    			description = descr;
-    		}
-
-    		public boolean accept(File f) {
-    			if (f != null) {
-    				if (f.isDirectory()) {
-    					return true;
-    				}
-    				String extension = getExtension(f);
-    				if (extension == null)
-    					return (ext.length() == 0);
-    				return ext.equals(extension);
-    			}
-    			return false;
-    		}
-
-    		public String getExtension(File f) {
-    			if (f != null) {
-    				String filename = f.getName();
-    				int i = filename.lastIndexOf('.');
-    				if (i > 0 && i < filename.length() - 1) {
-    					return filename.substring(i + 1).toLowerCase();
-    				}
-    				;
-    			}
-    			return null;
-    		}
-
-    		public String getDescription() {
-    			return description;
-    		}
-    	}
+    	
     }
     
     public String getFileName(){
@@ -168,13 +132,16 @@ public class OpenList extends JPanel
     }
    
 	class SearchListener implements ActionListener{
+		private OpenList par;
+		public SearchListener(OpenList arg1){
+			par = arg1;
+		}
     	public void actionPerformed(ActionEvent e){
     		if (fileName.getText().equals("") != true){
 	    		if (listModel.getSize() != 0){
 	    			String wave = waveNumber.getText();
 	    			if (testWave(wave)==false){
 	    				FILENAME = fileName.getText();
-	    				new Window1();
 			    		frame.setEnabled(false);
 			    		WAVE = Double.parseDouble(wave);
 			    		int t = listModel.getSize();
@@ -183,12 +150,14 @@ public class OpenList extends JPanel
 			    			String name = listModel.getElementAt(i).toString();
 			    			ELEMENTS[i] = name;
 			    		}
+			    		//new Searching(par);
+			    		new ChemComposition(par);
 	    			}else{
 	    				JOptionPane.showMessageDialog(null,
 	    			    		"You haven't typed Wave Length or did it incorrectly!",
 	    			    		"Warning",
 	    			    	    JOptionPane.PLAIN_MESSAGE);
-	    			}
+	    				}
 	    		}
 	    	}else{
 	    		JOptionPane.showMessageDialog(null,
@@ -198,7 +167,14 @@ public class OpenList extends JPanel
 	    	}
     	}
     	 private boolean testWave(String wave){
-    		 return waveNumber.getText().equals("");
+    		 final Pattern pattern=Pattern.compile("([0-9]{1,3}+.[0-9]{1,3})|([0-9]{1,5})");
+    		 Matcher matcher=pattern.matcher(wave);
+    		 if(matcher.matches()){
+    			return false;
+    		 }
+    		 else{
+    			 return true;
+    		 }
     	 }
     }
     class FireListener implements ActionListener {
@@ -231,40 +207,45 @@ public class OpenList extends JPanel
  
         //ActionListener.
         public void actionPerformed(ActionEvent e) {
-            String name = matterName.getText();
-     
-            if (name.equals("") || alreadyInList(name)) { //Checking for a new name
-                Toolkit.getDefaultToolkit().beep();
-                matterName.requestFocusInWindow();
-                matterName.selectAll();
-                return;
-            }
-            MatterList matterList = new MatterList();
-            if (matterList.correctMatter(name) == true){
-	            int index = list.getSelectedIndex(); //get selected index
-	            if (index == -1) { 
-	            	index = 0;
-	            } else {           
-	            	index++;
+        	if (listModel.getSize() < 5){
+	            String name = matterName.getText();
+	     
+	            if (name.equals("") || alreadyInList(name)) { //Checking for a new name
+	                Toolkit.getDefaultToolkit().beep();
+	                matterName.requestFocusInWindow();
+	                matterName.selectAll();
+	                return;
 	            }
-	 
-	            listModel.insertElementAt(matterName.getText().trim(), index);
-	 
-	            matterName.requestFocusInWindow(); //reset the textField
-	            matterName.setText("");
-	 
-	            list.setSelectedIndex(index);
-	            list.ensureIndexIsVisible(index);
-	    }
-        else {
-        	 JOptionPane.showMessageDialog(null,
-		    		"This input element from Mendeleev Table doesn't exist!",
-		    		"Fatal Error",
+	            MatterList matterList = new MatterList();
+	            if (matterList.correctMatter(name) == true){
+		            int index = list.getSelectedIndex(); //get selected index
+		            if (index == -1) { 
+		            	index = 0;
+		            } else {           
+		            	index++;
+		            }
+		 
+		            listModel.insertElementAt(matterName.getText().trim(), index);
+		 
+		            matterName.requestFocusInWindow(); //reset the textField
+		            matterName.setText("");
+		 
+		            list.setSelectedIndex(index);
+		            list.ensureIndexIsVisible(index);
+		    } else {
+		    	System.out.println(matterList.correctMatter(name));
+	        	 JOptionPane.showMessageDialog(null,
+			    		"This input element from Mendeleev Table is absent in our database!",
+			    		"Warning",
+			    	    JOptionPane.PLAIN_MESSAGE);}
+        }else{
+        	JOptionPane.showMessageDialog(null,
+		    		"The number of Elements can's overrun 5!",
+		    		"Warning",
 		    	    JOptionPane.PLAIN_MESSAGE);}
-
         }
         protected boolean alreadyInList(String name) {
-            return listModel.contains(name);
+            return listModel.contains(name.trim());
         }
  
         //DocumentListener.
@@ -319,6 +300,7 @@ public class OpenList extends JPanel
    		frame = new JFrame("Input Defraction Data");
 		frame.setBounds(100, 100, 337, 310);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setResizable(false);
 		OpenList window = new OpenList();
 		frame.getContentPane().add(window, BorderLayout.CENTER);
 		frame.setVisible(true);

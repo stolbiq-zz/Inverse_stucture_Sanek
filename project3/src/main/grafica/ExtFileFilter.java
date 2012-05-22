@@ -1,32 +1,42 @@
 package grafica;
 
 import java.io.File;
-import javax.swing.filechooser.FileFilter;
 
-public class ExtFileFilter extends FileFilter {
+class ExtFileFilter extends javax.swing.filechooser.FileFilter {
 
-    String ext;
+	String ext;
+	String description;
 
-    ExtFileFilter(String ext) {
-        this.ext = ext;
-    }
+	ExtFileFilter(String ext, String descr) {
+		this.ext = ext;
+		description = descr;
+	}
 
-    public boolean accept(File pathname) {
-        String extension = getExtension(pathname);
-        return extension.equals(ext);
-    }
+	public boolean accept(File f) {
+		if (f != null) {
+			if (f.isDirectory()) {
+				return true;
+			}
+			String extension = getExtension(f);
+			if (extension == null)
+				return (ext.length() == 0);
+			return ext.equals(extension);
+		}
+		return false;
+	}
 
-    private String getExtension(File pathname) {
-        String filename = pathname.getPath();
-        int i = filename.lastIndexOf('.');
-        if ( i>0 && i<filename.length()-1 ) {
-            return filename.substring(i+1).toLowerCase();
-        }
-        return "";
-    }
-
-	@Override
-	public String getDescription() {
+	public String getExtension(File f) {
+		if (f != null) {
+			String filename = f.getName();
+			int i = filename.lastIndexOf('.');
+			if (i > 0 && i < filename.length() - 1) {
+				return filename.substring(i + 1).toLowerCase();
+			}
+		}
 		return null;
+	}
+
+	public String getDescription() {
+		return description;
 	}
 }

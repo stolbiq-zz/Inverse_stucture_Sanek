@@ -9,7 +9,7 @@ import javax.swing.*;
 public class MyJList extends JPanel {
     private JList list;
     private DefaultListModel listModel;
-    private static int t;
+    private int t;
     
     public ArrayList<String> scannerReadFile(String file) throws FileNotFoundException{
     	t = 0;
@@ -34,7 +34,6 @@ public class MyJList extends JPanel {
 	        list = new JList(listModel);
 	        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	        list.setSelectedIndex(0);
-	        list.setVisibleRowCount(5);
 	        JScrollPane listScrollPane = new JScrollPane(list);
 	        add(listScrollPane, BorderLayout.CENTER);
         }
